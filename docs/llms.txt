@@ -1,0 +1,15 @@
+# Sentinel
+
+> Safe, auditable agentic sysadmin tool in Rust. LLM-driven Investigate → Plan → Approve → Act loop with a deny-by-default policy engine, operator approval gate, and hash-chained audit log.
+
+Sentinel is maintained by marcuspat (Agentic Engineer — Platform Engineering × AI-assisted development).
+
+## Links
+
+- [Landing page](https://marcuspat.github.io/Sentinel/): overview, features, FAQ
+- [Source code](https://github.com/marcuspat/Sentinel): README, issues, releases
+## Install
+
+```
+brew install marcuspat/tap/sentinel
+```
