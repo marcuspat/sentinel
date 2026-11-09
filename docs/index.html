@@ -5,10 +5,15 @@
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <title>Sentinel — marcuspat</title>
 <meta name="description" content="Safe, auditable agentic sysadmin tool in Rust. LLM-driven Investigate → Plan → Approve → Act loop with a deny-by-default policy engine, operator approval gate, and hash-chained audit log.">
+<link rel="canonical" href="https://marcuspat.github.io/Sentinel/">
 <meta property="og:title" content="Sentinel">
 <meta property="og:description" content="Safe, auditable agentic sysadmin tool in Rust. LLM-driven Investigate → Plan → Approve → Act loop with a deny-by-default policy engine, operator approval gate, and hash-chained audit log.">
 <meta property="og:type" content="website">
 <meta property="og:url" content="https://marcuspat.github.io/Sentinel/">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Sentinel">
+<meta name="twitter:description" content="Safe, auditable agentic sysadmin tool in Rust. LLM-driven Investigate → Plan → Approve → Act loop with a deny-by-default policy engine, operator approval gate, and hash-chained audit log.">
+<meta name="robots" content="index,follow">
 <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Ccircle cx='16' cy='16' r='13' fill='none' stroke='#22d3ee' stroke-width='2.5'/%3E%3Ccircle cx='16' cy='16' r='5' fill='#a78bfa'/%3E%3C/svg%3E">
 <style>
 *{margin:0;padding:0;box-sizing:border-box}
@@ -63,6 +68,9 @@ footer a:hover{color:var(--a1)}
 @media(max-width:640px){.nav{padding:12px 16px}.hero-inner{padding:44px 18px 32px}.stats{gap:14px}}
 @media (prefers-reduced-motion:reduce){*,*::before,*::after{animation-duration:.01ms !important;animation-iteration-count:1 !important;transition:none !important}}
 </style>
+<style>details{border:1px solid var(--line);border-radius:11px;padding:14px 18px;background:var(--card)}details+details{margin-top:10px}summary{cursor:pointer;font-weight:600;font-size:14.5px}summary:hover{color:var(--a1)}details p{margin-top:10px;font-size:13.8px;color:var(--mut)}</style>
+<script type="application/ld+json">{"@context": "https://schema.org", "@graph": [{"@type": "SoftwareSourceCode", "name": "Sentinel", "description": "Safe, auditable agentic sysadmin tool in Rust. LLM-driven Investigate → Plan → Approve → Act loop with a deny-by-default policy engine, operator approval gate, and hash-chained audit log.", "url": "https://marcuspat.github.io/Sentinel/", "codeRepository": "https://github.com/marcuspat/Sentinel", "programmingLanguage": "Rust", "keywords": "agentic-ai, ai-agent, audit-log, automation, claude, devops, infrastructure, llm, mtls, observability, ollama, openai", "author": {"@type": "Person", "name": "marcuspat", "url": "https://github.com/marcuspat"}, "maintainer": {"@type": "Person", "name": "marcuspat", "url": "https://github.com/marcuspat"}, "dateModified": "2026-11-07T03:18:46Z", "version": "v0.2.1", "isAccessibleForFree": true, "license": "https://github.com/marcuspat/Sentinel/blob/HEAD/LICENSE"}, {"@type": "WebSite", "name": "Sentinel — marcuspat", "url": "https://marcuspat.github.io/Sentinel/", "publisher": {"@type": "Person", "name": "marcuspat"}}, {"@type": "Person", "name": "marcuspat", "url": "https://github.com/marcuspat", "description": "Agentic Engineer — Platform Engineering × AI-assisted development"}]}</script>
+<script type="application/ld+json">{"@context": "https://schema.org", "@type": "FAQPage", "mainEntity": [{"@type": "Question", "name": "What is Sentinel?", "acceptedAnswer": {"@type": "Answer", "text": "Safe, auditable agentic sysadmin tool in Rust."}}, {"@type": "Question", "name": "Who maintains Sentinel?", "acceptedAnswer": {"@type": "Answer", "text": "marcuspat — Agentic Engineer — Platform Engineering × AI-assisted development. Source code and issues live on GitHub at github.com/marcuspat/Sentinel."}}, {"@type": "Question", "name": "How do I install Sentinel?", "acceptedAnswer": {"@type": "Answer", "text": "Run `brew install marcuspat/tap/sentinel` (via Homebrew). Full instructions in the repository README."}}]}</script>
 </head>
 <body>
 <header class="nav">
@@ -104,11 +112,12 @@ footer a:hover{color:var(--a1)}
 <main>
 <section id="about"><h2>What it does</h2><div class="cards"><div class="card"><h3>Investigate → Plan → Approve → Act</h3><p>An LLM-driven loop where every system mutation passes an operator approval gate before it runs.</p></div><div class="card"><h3>Deny-by-default policy engine</h3><p>Actions not explicitly allowed are refused — the agent can look everywhere but touch only what you grant.</p></div><div class="card"><h3>Hash-chained audit log</h3><p>Every step is recorded in a tamper-evident chain, so the operation can be replayed and judged by its evidence.</p></div></div></section>
 <section id="install"><h2>Install</h2><div class="install"><pre><code>brew install marcuspat/tap/sentinel</code><button class="copy" onclick="cp(this)">copy</button></pre><p style="color:var(--mut);font-size:12.5px;margin-top:10px">via Homebrew</p></div></section>
+<section id="faq"><h2>FAQ</h2><div class="faq"><details><summary>What is Sentinel?</summary><p>Safe, auditable agentic sysadmin tool in Rust.</p></details><details><summary>Who maintains Sentinel?</summary><p>marcuspat — Agentic Engineer — Platform Engineering × AI-assisted development. Source code and issues live on GitHub at github.com/marcuspat/Sentinel.</p></details><details><summary>How do I install Sentinel?</summary><p>Run `brew install marcuspat/tap/sentinel` (via Homebrew). Full instructions in the repository README.</p></details></div></section>
 <section id="more"><h2>Explore</h2><div class="links">
 <a href="https://github.com/marcuspat/Sentinel#readme">README <span class="arr">→</span></a>
 <a href="https://github.com/marcuspat/Sentinel/releases">Releases <span class="arr">→</span></a>
 <a href="https://github.com/marcuspat/Sentinel/issues">Issues <span class="arr">→</span></a>
-<a href="https://github.com/marcuspat/Sentinel/license">License <span class="arr">→</span></a>
+<a href="https://github.com/marcuspat/Sentinel/blob/HEAD/LICENSE">License <span class="arr">→</span></a>
 </div></section>
 </main>
 <footer>
