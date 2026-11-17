@@ -152,8 +152,8 @@ jobs:
           skips=$(grep -c 'SKIPPED: seccomp network filter unavailable' "$log" || true)
           fails=${fails:-0}; skips=${skips:-0}
           case "${{ steps.tests.outcome }}" in
-            '')
-              echo "BARE-ENV REPORT: test step never ran (an earlier step failed) — no seccomp signal. This leg is non-blocking."
+            skipped)
+              echo "BARE-ENV REPORT: test step was skipped (an earlier step failed) — no seccomp signal. This leg is non-blocking."
               ;;
             success)
               if [ "${skips}" -gt 0 ]; then
