@@ -92,6 +92,60 @@ jobs:
               | while IFS= read -r line; do echo "::error::${line}"; done || true
           fi
 
+  # Bare-container seccomp visibility leg.
+  #
+  # WHY continue-on-error: the sandbox installs a seccomp BPF filter that
+  # denies Internet socket creation, and tests in sentinel-exec assert the
+  # filter actually took effect (executor::non_network_commands_run_with_inet_sockets_denied,
+  # sandbox::deny_network_blocks_inet_sockets_but_not_unix_or_netlink, ...).
+  # Docker containers run under a restrictive default seccomp profile, which
+  # changes what those nested filters can do — the 2026-11-16 release
+  # validation sweep found exactly one such test failing inside a nested
+  # container, and reproduced it green on a clean Linux box: environmental,
+  # not a code bug. This job makes that environment-sensitivity VISIBLE in CI
+  # without blocking releases: a red bare-env means "container profile got in
+  # the way", not "the code regressed". Flip continue-on-error to false once
+  # the tests are container-aware and can be trusted as a gate.
+  bare-env:
+    name: Bare container (seccomp visibility)
+    continue-on-error: true
+    runs-on: ubuntu-latest
+    container:
+      image: rust:1 # Debian GNU userland; moving tag is fine — visibility only.
+
+    steps:
+      # The rust image ships without git; actions/checkout needs it first.
+      - name: Install git
+        run: apt-get update && apt-get install -y --no-install-recommends git
+
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4.4.0
+
+      # Scoped to sentinel-exec — the only crate whose tests exercise the
+      # seccomp filter. RUSTFLAGS untouched: this is the stock build.
+      - name: cargo test (sentinel-exec)
+        shell: bash
+        run: |
+          set -o pipefail
+          cargo test -p sentinel-exec --locked 2>&1 | tee bare-env-test.log
+
+      # One grep-able line stating whether the seccomp filters installed or
+      # were blocked by the container profile, so the leg's verdict is
+      # readable straight from the job summary / log search.
+      - name: BARE-ENV REPORT
+        if: always()
+        shell: bash
+        run: |
+          echo "BARE-ENV REPORT: container seccomp status: $(grep '^Seccomp:' /proc/self/status || echo 'unreadable')"
+          skips=$(grep -c 'SKIPPED: seccomp network filter unavailable' bare-env-test.log 2>/dev/null || true)
+          fails=$(sed -E 's/\x1B\[[0-9;]*[A-Za-z]//g' bare-env-test.log 2>/dev/null | grep -cE '^test .* \.\.\. FAILED$|panicked at' || true)
+          if [ "${fails}" -gt 0 ]; then
+            echo "BARE-ENV REPORT: ${fails} sentinel-exec test(s) FAILED in the bare container — expected under the container's default seccomp profile (environmental, not a code bug; see findings/sentinel.md, 2026-11-16 sweep). This leg is non-blocking."
+          elif [ "${skips}" -gt 0 ]; then
+            echo "BARE-ENV REPORT: seccomp filters were BLOCKED by the container profile — ${skips} test(s) self-skipped (environmental, not a code bug). This leg is non-blocking."
+          else
+            echo "BARE-ENV REPORT: seccomp filters INSTALLED and all sentinel-exec tests passed in the bare container."
+          fi
+
   supply-chain:
     name: Supply chain (cargo-deny)
     runs-on: ubuntu-latest
