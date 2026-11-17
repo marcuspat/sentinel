@@ -122,29 +122,59 @@ jobs:
 
       # Scoped to sentinel-exec — the only crate whose tests exercise the
       # seccomp filter. RUSTFLAGS untouched: this is the stock build.
+      # `--nocapture` is load-bearing: the tests signal "filter unavailable on
+      # this target" via eprintln! and then pass, and libtest swallows passing
+      # tests' output by default — without it the skip line never reaches the
+      # log and a blocked environment would be misreported as healthy.
       - name: cargo test (sentinel-exec)
+        id: tests
         shell: bash
         run: |
           set -o pipefail
-          cargo test -p sentinel-exec --locked 2>&1 | tee bare-env-test.log
+          cargo test -p sentinel-exec --locked -- --nocapture 2>&1 | tee bare-env-test.log
 
       # One grep-able line stating whether the seccomp filters installed or
       # were blocked by the container profile, so the leg's verdict is
-      # readable straight from the job summary / log search.
+      # readable straight from the job summary / log search. Fail-closed:
+      # the verdict branches on the test step's own outcome first, so a
+      # build/toolchain failure or a missing log can never be reported as
+      # "passed". (Failure counts read only `test ... FAILED` lines — each
+      # failing test emits exactly one, whereas `panicked at` would
+      # double-count.)
       - name: BARE-ENV REPORT
         if: always()
         shell: bash
         run: |
           echo "BARE-ENV REPORT: container seccomp status: $(grep '^Seccomp:' /proc/self/status || echo 'unreadable')"
-          skips=$(grep -c 'SKIPPED: seccomp network filter unavailable' bare-env-test.log 2>/dev/null || true)
-          fails=$(sed -E 's/\x1B\[[0-9;]*[A-Za-z]//g' bare-env-test.log 2>/dev/null | grep -cE '^test .* \.\.\. FAILED$|panicked at' || true)
-          if [ "${fails}" -gt 0 ]; then
-            echo "BARE-ENV REPORT: ${fails} sentinel-exec test(s) FAILED in the bare container — expected under the container's default seccomp profile (environmental, not a code bug; see findings/sentinel.md, 2026-11-16 sweep). This leg is non-blocking."
-          elif [ "${skips}" -gt 0 ]; then
-            echo "BARE-ENV REPORT: seccomp filters were BLOCKED by the container profile — ${skips} test(s) self-skipped (environmental, not a code bug). This leg is non-blocking."
-          else
-            echo "BARE-ENV REPORT: seccomp filters INSTALLED and all sentinel-exec tests passed in the bare container."
-          fi
+          log=bare-env-test.log
+          [ -f "$log" ] || log=/dev/null
+          fails=$(sed -E 's/\x1B\[[0-9;]*[A-Za-z]//g' "$log" | grep -cE '^test .* \.\.\. FAILED$' || true)
+          skips=$(grep -c 'SKIPPED: seccomp network filter unavailable' "$log" || true)
+          fails=${fails:-0}; skips=${skips:-0}
+          case "${{ steps.tests.outcome }}" in
+            '')
+              echo "BARE-ENV REPORT: test step never ran (an earlier step failed) — no seccomp signal. This leg is non-blocking."
+              ;;
+            success)
+              if [ "${skips}" -gt 0 ]; then
+                echo "BARE-ENV REPORT: seccomp filters were BLOCKED by the container profile — ${skips} test(s) self-skipped (environmental, not a code bug). This leg is non-blocking."
+              else
+                echo "BARE-ENV REPORT: seccomp filters INSTALLED and all sentinel-exec tests passed in the bare container."
+              fi
+              ;;
+            failure)
+              if [ "${fails}" -gt 0 ]; then
+                suffix=""
+                [ "${skips}" -gt 0 ] && suffix=", ${skips} further test(s) self-skipped"
+                echo "BARE-ENV REPORT: ${fails} sentinel-exec test(s) FAILED in the bare container${suffix} — expected under the container's default seccomp profile (environmental, not a code bug; see findings/sentinel.md, 2026-11-16 sweep). This leg is non-blocking."
+              else
+                echo "BARE-ENV REPORT: test step FAILED with no per-test failures — build/toolchain error, not a seccomp verdict. This leg is non-blocking."
+              fi
+              ;;
+            *)
+              echo "BARE-ENV REPORT: test step outcome '${{ steps.tests.outcome }}' — no seccomp verdict. This leg is non-blocking."
+              ;;
+          esac
 
   supply-chain:
     name: Supply chain (cargo-deny)
