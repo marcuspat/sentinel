@@ -1376,28 +1376,43 @@ mod tests {
             eprintln!("SKIPPED: seccomp network filter unavailable on this target");
             return;
         }
-        // Seccomp mode 2 = a filter is installed.
-        let seccomp_mode = |status: &str| {
-            status
-                .lines()
-                .find(|l| l.starts_with("Seccomp:"))
-                .map(|l| l.split_whitespace().last().unwrap().to_string())
-                .expect("Seccomp line")
+        // An enclosing container can already have a seccomp profile. Compare
+        // the children's filters with the state inherited from this thread.
+        let seccomp_field = |status: &str, field: &str| -> Option<u32> {
+            status.lines().find_map(|line| {
+                line.strip_prefix(field)
+                    .map(|value| value.trim().parse().expect("numeric seccomp field"))
+            })
         };
+        let parent = std::fs::read_to_string("/proc/thread-self/status").expect("parent status");
         let confined = HardenedExecutor::new(["cat"], 10_000, SandboxConfig::default());
-        let out = confined
+        let confined_status = confined
             .run("cat", &["/proc/self/status"], &HashMap::new(), 64 * 1024)
             .await
             .unwrap();
-        assert_eq!(seccomp_mode(&out.stdout), "2");
 
-        // Off is the escape hatch for the whole confinement layer.
-        let off = confined.clone().with_landlock_mode(LandlockMode::Off);
-        let out = off
+        let off = confined.with_landlock_mode(LandlockMode::Off);
+        let off_status = off
             .run("cat", &["/proc/self/status"], &HashMap::new(), 64 * 1024)
             .await
             .unwrap();
-        assert_eq!(seccomp_mode(&out.stdout), "0");
+        if let Some(inherited) = seccomp_field(&parent, "Seccomp_filters:") {
+            let installed = seccomp_field(&confined_status.stdout, "Seccomp_filters:")
+                .expect("confined filter count");
+            assert!(installed > inherited);
+            assert_eq!(
+                seccomp_field(&off_status.stdout, "Seccomp_filters:"),
+                Some(inherited)
+            );
+        } else {
+            // Older kernels report the mode without the filter count.
+            let inherited = seccomp_field(&parent, "Seccomp:").expect("parent seccomp mode");
+            assert_eq!(seccomp_field(&confined_status.stdout, "Seccomp:"), Some(2));
+            assert_eq!(
+                seccomp_field(&off_status.stdout, "Seccomp:"),
+                Some(inherited)
+            );
+        }
     }
 
     #[test]
