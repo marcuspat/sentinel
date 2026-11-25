@@ -20,7 +20,7 @@ use sentinel_fleet::{
 use sentinel_mcp::{default_state_dir, index_capabilities, AuditSink};
 use sentinel_policy::{PolicyEffect, PolicyRequest};
 use sentinel_sysadmin::policy_source;
-use sentinel_sysadmin_core::{CapabilityResult, ExecutionContext};
+use sentinel_sysadmin_core::{CapabilityResult, ExecutionContext, UtcTimestamp};
 use uuid::Uuid;
 
 /// Wall-clock limit for one capability on the host side.
@@ -90,7 +90,7 @@ async fn agent_exec_inner(
         risk_tier: m.risk_tier,
         args: args.clone(),
         target_host: "localhost".into(),
-        timestamp: chrono::Utc::now(),
+        timestamp: UtcTimestamp::now(),
         session_phase: Some("FleetAgent".into()),
     });
     audit
@@ -188,7 +188,7 @@ pub fn decide_hosts(
                 risk_tier: manifest.risk_tier,
                 args: args.clone(),
                 target_host: h.hostname.clone(),
-                timestamp: chrono::Utc::now(),
+                timestamp: UtcTimestamp::now(),
                 session_phase: Some("Fleet".into()),
             });
             let decision = match &d.effect {

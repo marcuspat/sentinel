@@ -345,6 +345,7 @@ pub fn load_policy(path: Option<&Path>) -> Result<PolicyEvaluator, PolicyError> 
 mod tests {
     use super::*;
     use crate::evaluator::{PolicyEffect, PolicyRequest};
+    use sentinel_sysadmin_core::UtcTimestamp;
     use serde_json::json;
     use uuid::Uuid;
 
@@ -362,7 +363,7 @@ mod tests {
             risk_tier: tier,
             args,
             target_host: host.into(),
-            timestamp: chrono::Utc::now(),
+            timestamp: UtcTimestamp::now(),
             session_phase: None,
         }
     }

@@ -17,9 +17,9 @@
 //! sidecar to an earlier checkpoint is only detectable if checkpoints (or
 //! just the latest head) are also shipped off-host.
 
+use sentinel_sysadmin_core::{TimestampPrecision, UtcTimestamp};
 use std::path::{Path, PathBuf};
 
-use chrono::{DateTime, SecondsFormat, Utc};
 use ed25519_dalek::{Signature, Signer, SigningKey, VerifyingKey};
 use serde::{Deserialize, Serialize};
 use sha2::{Digest, Sha256};
@@ -44,7 +44,7 @@ pub struct Checkpoint {
     pub event_count: u64,
     /// `this_hash` of event `event_count - 1`.
     pub head_hash: String,
-    pub signed_at: DateTime<Utc>,
+    pub signed_at: UtcTimestamp,
     /// First 16 hex chars of SHA-256(public key).  A lookup hint only.
     pub key_id: String,
     /// Hex Ed25519 public key that produced `signature`.  Informational:
@@ -64,11 +64,11 @@ impl Checkpoint {
         session_id: Uuid,
         event_count: u64,
         head_hash: &str,
-        signed_at: &DateTime<Utc>,
+        signed_at: &UtcTimestamp,
     ) -> Vec<u8> {
         format!(
             "{DOMAIN}\n{session_id}\n{event_count}\n{head_hash}\n{}",
-            signed_at.to_rfc3339_opts(SecondsFormat::Nanos, true)
+            signed_at.rfc3339(TimestampPrecision::Nanoseconds)
         )
         .into_bytes()
     }
@@ -196,7 +196,7 @@ impl AuditSigner {
 
     /// Sign a checkpoint for the given chain head.
     pub fn sign(&self, session_id: Uuid, event_count: u64, head_hash: &str) -> Checkpoint {
-        let signed_at = Utc::now();
+        let signed_at = UtcTimestamp::now();
         let msg = Checkpoint::signing_message(session_id, event_count, head_hash, &signed_at);
         Checkpoint {
             version: 1,
@@ -463,7 +463,7 @@ mod tests {
         assert!(!cp.verify_signature(&key), "event_count is signed");
 
         let mut cp = signer.sign(sid, 2, &events[1].this_hash);
-        cp.signed_at += chrono::Duration::seconds(1);
+        cp.signed_at = "2000-01-01T00:00:00Z".parse().unwrap();
         assert!(!cp.verify_signature(&key), "signed_at is signed");
 
         let mut cp = signer.sign(sid, 2, &events[1].this_hash);

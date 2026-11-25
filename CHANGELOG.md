@@ -6,6 +6,12 @@ The format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
 ## [Unreleased]
 
+### Changed
+
+- The Rust API now uses `sentinel_sysadmin_core::UtcTimestamp` and
+  `UtcWeekday` for timestamps and policy weekdays. Serialized records,
+  audit event hashes, and checkpoint signatures use the existing formats.
+
 ## [0.2.0] - Unreleased
 
 Branch `feat/sota-round-2` (draft PR #11). Not tagged; the date is set when the

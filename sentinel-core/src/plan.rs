@@ -1,3 +1,4 @@
+use crate::UtcTimestamp;
 use serde::{Deserialize, Serialize};
 
 use crate::capability::RiskTier;
@@ -108,9 +109,9 @@ pub struct Plan {
     /// Explanation of why this plan was chosen over alternatives.
     pub rationale: String,
     /// Wall-clock time when the plan was created.
-    pub created_at: chrono::DateTime<chrono::Utc>,
+    pub created_at: UtcTimestamp,
     /// Wall-clock time when the plan received its first approval decision.
-    pub approved_at: Option<chrono::DateTime<chrono::Utc>>,
+    pub approved_at: Option<UtcTimestamp>,
     /// The operator's approval decision.
     pub approval: ApprovalDecision,
 }
@@ -125,7 +126,7 @@ impl Plan {
             steps: Vec::new(),
             overall_risk: RiskTier::Low,
             rationale,
-            created_at: chrono::Utc::now(),
+            created_at: UtcTimestamp::now(),
             approved_at: None,
             approval: ApprovalDecision::Pending,
         }
@@ -176,7 +177,7 @@ impl Plan {
 
     /// Approve the entire plan for immediate execution.
     pub fn approve(&mut self) {
-        self.approved_at = Some(chrono::Utc::now());
+        self.approved_at = Some(UtcTimestamp::now());
         self.approval = ApprovalDecision::FullApproval;
     }
 

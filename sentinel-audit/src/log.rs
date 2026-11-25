@@ -1,7 +1,7 @@
+use sentinel_sysadmin_core::{TimestampPrecision, UtcTimestamp};
 use std::path::PathBuf;
 use std::sync::Arc;
 
-use chrono::Utc;
 use tokio::io::AsyncWriteExt;
 use tracing::debug;
 use uuid::Uuid;
@@ -93,7 +93,7 @@ impl AuditLog {
     pub async fn append(&mut self, event_type: AuditEventType) -> Result<&AuditEvent, AuditError> {
         let event_id = Uuid::new_v4();
         let sequence = self.next_sequence;
-        let timestamp = Utc::now();
+        let timestamp = UtcTimestamp::now();
         let prev_hash = self.last_hash.clone();
 
         let this_hash = AuditEvent::compute_hash(
@@ -217,7 +217,7 @@ impl AuditLog {
             out.push_str(&format!(
                 "[{seq:>6}] {ts}  {kind}\n         event_id={eid}  prev={prev}  hash={hash}\n\n",
                 seq = ev.sequence,
-                ts = ev.timestamp.format("%Y-%m-%dT%H:%M:%S%.3fZ"),
+                ts = ev.timestamp.rfc3339(TimestampPrecision::Milliseconds),
                 kind = event_type_label(&ev.event_type),
                 eid = ev.event_id,
                 prev = &ev.prev_hash[..8],

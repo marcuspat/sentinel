@@ -25,7 +25,7 @@ use uuid::Uuid;
 use sentinel_audit::AuditEventType;
 use sentinel_policy::{PolicyDecision, PolicyEffect, PolicyEvaluator, PolicyRequest};
 use sentinel_sysadmin_core::{
-    Capability, CapabilityKind, CapabilityResult, ExecutionContext, Plan, PlanStep,
+    Capability, CapabilityKind, CapabilityResult, ExecutionContext, Plan, PlanStep, UtcTimestamp,
 };
 
 use crate::audit::AuditSink;
@@ -348,7 +348,7 @@ impl Gate {
             risk_tier: m.risk_tier,
             args: args.clone(),
             target_host: self.config.host.clone(),
-            timestamp: chrono::Utc::now(),
+            timestamp: UtcTimestamp::now(),
             session_phase: Some(phase.to_string()),
         }
     }

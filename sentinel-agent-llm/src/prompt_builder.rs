@@ -316,6 +316,7 @@ If not, request the next capability invocation:
 #[cfg(test)]
 mod tests {
     use super::*;
+    use sentinel_sysadmin_core::UtcTimestamp;
     use sentinel_sysadmin_core::{CapabilityKind, CapabilityManifest, RiskTier};
 
     #[test]
@@ -418,7 +419,7 @@ mod tests {
             capability_id: "disk_usage".to_string(),
             args: serde_json::json!({"path": "/"}),
             result: CapabilityResult::success(serde_json::json!({"used": "85%"})),
-            timestamp: chrono::Utc::now(),
+            timestamp: UtcTimestamp::now(),
             injection_audited: false,
         };
 
@@ -444,7 +445,7 @@ mod tests {
             capability_id: "cpu_info".to_string(),
             args: serde_json::json!({}),
             result: CapabilityResult::success(serde_json::json!({"cpu": "95%"})),
-            timestamp: chrono::Utc::now(),
+            timestamp: UtcTimestamp::now(),
             injection_audited: false,
         };
 

@@ -1,4 +1,4 @@
-use chrono::{DateTime, Utc};
+use sentinel_sysadmin_core::UtcTimestamp;
 use serde::{Deserialize, Serialize};
 
 /// Unique, stable identifier for a fleet host.
@@ -56,9 +56,9 @@ pub struct Host {
     /// Logical group memberships (e.g. "production", "web-tier").
     pub groups: Vec<String>,
     /// When the host was first registered with the controller.
-    pub registered_at: DateTime<Utc>,
+    pub registered_at: UtcTimestamp,
     /// Most recent time the controller received a heartbeat from this host.
-    pub last_seen: Option<DateTime<Utc>>,
+    pub last_seen: Option<UtcTimestamp>,
     /// Current reachability / operational status.
     pub status: HostStatus,
     /// SHA-256 fingerprint of the host's mTLS certificate (hex-encoded).
@@ -76,7 +76,7 @@ impl Host {
             ip_address,
             port,
             groups: Vec::new(),
-            registered_at: Utc::now(),
+            registered_at: UtcTimestamp::now(),
             last_seen: None,
             status: HostStatus::Offline,
             cert_fingerprint: None,
@@ -91,7 +91,7 @@ impl Host {
             ip_address,
             port,
             groups: Vec::new(),
-            registered_at: Utc::now(),
+            registered_at: UtcTimestamp::now(),
             last_seen: None,
             status: HostStatus::Offline,
             cert_fingerprint: None,
@@ -112,7 +112,7 @@ impl Host {
 
     /// Update `last_seen` to the current wall-clock time and set status to `Online`.
     pub fn mark_seen(&mut self) {
-        self.last_seen = Some(Utc::now());
+        self.last_seen = Some(UtcTimestamp::now());
         self.status = HostStatus::Online;
     }
 }

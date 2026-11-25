@@ -10,7 +10,9 @@ use serde::{Deserialize, Serialize};
 use tracing::{debug, warn};
 use uuid::Uuid;
 
-use sentinel_sysadmin_core::{CapabilityManifest, CapabilityResult, Plan, PlanStep, RiskTier};
+use sentinel_sysadmin_core::{
+    CapabilityManifest, CapabilityResult, Plan, PlanStep, RiskTier, UtcTimestamp,
+};
 
 use crate::error::AgentError;
 
@@ -31,7 +33,7 @@ pub struct Observation {
     /// Result returned by the capability.
     pub result: CapabilityResult,
     /// Wall-clock time when the observation was recorded.
-    pub timestamp: chrono::DateTime<chrono::Utc>,
+    pub timestamp: UtcTimestamp,
     /// Whether the prompt-injection tripwire already audited this
     /// observation. Set by `investigate()` so `plan()` can skip
     /// already-audited observations instead of double-counting hits in
@@ -53,7 +55,7 @@ impl Observation {
             capability_id: capability_id.into(),
             args,
             result,
-            timestamp: chrono::Utc::now(),
+            timestamp: UtcTimestamp::now(),
             injection_audited: false,
         }
     }

@@ -8,6 +8,8 @@ pub mod execution_context;
 pub mod plan;
 /// Session lifecycle management.
 pub mod session;
+/// UTC timestamp and weekday types shared by the workspace.
+pub mod timestamp;
 
 // ── Top-level re-exports ──────────────────────────────────────────────────────
 
@@ -27,3 +29,5 @@ pub use plan::{ApprovalDecision, Plan, PlanStep, StepStatus};
 
 // session
 pub use session::{Observation, Session, SessionCheckpoint, SessionPhase};
+
+pub use timestamp::{ParseTimestampError, TimestampPrecision, UtcTimestamp, UtcWeekday};

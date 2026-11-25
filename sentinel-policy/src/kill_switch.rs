@@ -7,12 +7,11 @@
 //! The kill switch is safe to share across threads: activation uses an
 //! [`AtomicBool`] and the reason/timestamp are guarded by [`RwLock`]s.
 
+use sentinel_sysadmin_core::UtcTimestamp;
 use std::sync::{
     atomic::{AtomicBool, Ordering},
     Arc, RwLock,
 };
-
-use chrono::{DateTime, Utc};
 
 /// Thread-safe global kill switch.
 ///
@@ -24,7 +23,7 @@ use chrono::{DateTime, Utc};
 pub struct KillSwitch {
     activated: AtomicBool,
     reason: RwLock<Option<String>>,
-    activated_at: RwLock<Option<DateTime<Utc>>>,
+    activated_at: RwLock<Option<UtcTimestamp>>,
 }
 
 impl KillSwitch {
@@ -60,7 +59,7 @@ impl KillSwitch {
                 .activated_at
                 .write()
                 .expect("kill_switch activated_at lock poisoned");
-            *a = Some(Utc::now());
+            *a = Some(UtcTimestamp::now());
         }
         self.activated.store(true, Ordering::SeqCst);
     }
@@ -105,7 +104,7 @@ impl KillSwitch {
 
     /// Returns the UTC timestamp of the last activation, or `None` if not
     /// currently active.
-    pub fn activated_at(&self) -> Option<DateTime<Utc>> {
+    pub fn activated_at(&self) -> Option<UtcTimestamp> {
         *self
             .activated_at
             .read()
@@ -179,10 +178,10 @@ mod tests {
 
     #[test]
     fn activation_timestamp_is_after_before_timestamp() {
-        let before = Utc::now();
+        let before = UtcTimestamp::now();
         let ks = KillSwitch::new();
         ks.activate("timing test");
-        let after = Utc::now();
+        let after = UtcTimestamp::now();
 
         let ts = ks.activated_at().unwrap();
         assert!(ts >= before, "activated_at should be >= before");

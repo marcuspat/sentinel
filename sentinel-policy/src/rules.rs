@@ -3,8 +3,7 @@
 //! A [`PolicyRule`] pairs a set of [`RuleCondition`]s with a [`RuleEffect`].
 //! Rules are sorted by ascending priority; the *first* matching rule wins.
 
-use chrono::{Utc, Weekday};
-use sentinel_sysadmin_core::{CapabilityKind, RiskTier};
+use sentinel_sysadmin_core::{CapabilityKind, RiskTier, UtcTimestamp, UtcWeekday};
 use serde::{Deserialize, Serialize};
 
 use crate::evaluator::PolicyRequest;
@@ -53,7 +52,7 @@ pub enum RuleCondition {
     TimeWindow {
         start_hour: u8,
         end_hour: u8,
-        days: Vec<Weekday>,
+        days: Vec<UtcWeekday>,
     },
 
     /// The capability kind must match exactly (e.g. ReadOnly or Mutating).
@@ -94,19 +93,7 @@ impl RuleCondition {
                 start_hour,
                 end_hour,
                 days,
-            } => {
-                let now = Utc::now();
-                let hour = now.format("%H").to_string().parse::<u8>().unwrap_or(0);
-                let weekday = now.format("%A").to_string();
-                let hour_ok = if start_hour <= end_hour {
-                    hour >= *start_hour && hour < *end_hour
-                } else {
-                    // Wraps midnight, e.g. 22–06
-                    hour >= *start_hour || hour < *end_hour
-                };
-                let day_ok = days.is_empty() || days.iter().any(|d| weekday_name(d) == weekday);
-                hour_ok && day_ok
-            }
+            } => matches_time_window(UtcTimestamp::now(), *start_hour, *end_hour, days),
 
             RuleCondition::CapabilityKindIs { kind } => req.capability_kind == *kind,
 
@@ -200,16 +187,19 @@ fn json_path_contains(value: &serde_json::Value, path: &str, needle: &str) -> bo
         .unwrap_or(false)
 }
 
-fn weekday_name(day: &Weekday) -> &'static str {
-    match day {
-        Weekday::Mon => "Monday",
-        Weekday::Tue => "Tuesday",
-        Weekday::Wed => "Wednesday",
-        Weekday::Thu => "Thursday",
-        Weekday::Fri => "Friday",
-        Weekday::Sat => "Saturday",
-        Weekday::Sun => "Sunday",
-    }
+fn matches_time_window(
+    now: UtcTimestamp,
+    start_hour: u8,
+    end_hour: u8,
+    days: &[UtcWeekday],
+) -> bool {
+    let hour = now.hour();
+    let hour_ok = if start_hour <= end_hour {
+        hour >= start_hour && hour < end_hour
+    } else {
+        hour >= start_hour || hour < end_hour
+    };
+    hour_ok && (days.is_empty() || days.contains(&now.weekday()))
 }
 
 // ── Unit tests ────────────────────────────────────────────────────────────────
@@ -218,9 +208,20 @@ fn weekday_name(day: &Weekday) -> &'static str {
 mod tests {
     use super::*;
     use crate::evaluator::PolicyRequest;
-    use chrono::TimeZone;
     use sentinel_sysadmin_core::{CapabilityKind, RiskTier};
     use uuid::Uuid;
+
+    #[test]
+    fn time_window_uses_the_utc_calendar_at_midnight() {
+        let sunday = "2024-01-15T00:30:00+01:00".parse().unwrap();
+        let monday = "2024-01-15T00:30:00Z".parse().unwrap();
+        let end = "2024-01-15T06:00:00Z".parse().unwrap();
+
+        assert!(matches_time_window(sunday, 22, 6, &[UtcWeekday::Sun]));
+        assert!(!matches_time_window(sunday, 22, 6, &[UtcWeekday::Mon]));
+        assert!(matches_time_window(monday, 22, 6, &[UtcWeekday::Mon]));
+        assert!(!matches_time_window(end, 22, 6, &[UtcWeekday::Mon]));
+    }
 
     fn make_request(cap_id: &str, risk: RiskTier, host: &str) -> PolicyRequest {
         PolicyRequest {
@@ -230,7 +231,7 @@ mod tests {
             risk_tier: risk,
             args: serde_json::json!({}),
             target_host: host.to_string(),
-            timestamp: chrono::Utc.with_ymd_and_hms(2024, 1, 15, 10, 0, 0).unwrap(), // Monday 10:00
+            timestamp: "2024-01-15T10:00:00Z".parse().unwrap(), // Monday 10:00
             session_phase: None,
         }
     }
@@ -367,7 +368,7 @@ mod tests {
 
     #[test]
     fn time_window_matches() {
-        // TimeWindow now uses Utc::now(). Use a window that covers all 24 hours
+        // TimeWindow now uses UtcTimestamp::now(). Use a window that covers all 24 hours
         // (start=0, end=24) with an empty days list (matches every day), so the
         // test passes regardless of when it runs.
         let req = make_request("op", RiskTier::Low, "h");

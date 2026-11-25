@@ -5,7 +5,6 @@
 
 use std::sync::Arc;
 
-use chrono::{TimeZone, Utc};
 use proptest::prelude::*;
 use sentinel_policy::resource_guard::{default_resource_guards, normalise_path, normalise_unit};
 use sentinel_policy::{
@@ -30,7 +29,7 @@ fn request(
         risk_tier: risk,
         args,
         target_host: host.to_string(),
-        timestamp: Utc.with_ymd_and_hms(2026, 1, 15, 10, 0, 0).unwrap(),
+        timestamp: "2026-01-15T10:00:00Z".parse().unwrap(),
         session_phase: None,
     }
 }
