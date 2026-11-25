@@ -11,8 +11,7 @@
 
 use std::sync::Arc;
 
-use chrono::{DateTime, Utc};
-use sentinel_sysadmin_core::{CapabilityKind, RiskTier};
+use sentinel_sysadmin_core::{CapabilityKind, RiskTier, UtcTimestamp};
 use serde_json::Value;
 use tracing::{debug, warn};
 use uuid::Uuid;
@@ -39,7 +38,7 @@ pub struct PolicyRequest {
     /// The host that would be targeted by the capability.
     pub target_host: String,
     /// When the request was created.
-    pub timestamp: DateTime<Utc>,
+    pub timestamp: UtcTimestamp,
     /// Optional current session phase label (e.g. `"Executing"`).
     pub session_phase: Option<String>,
 }
@@ -71,7 +70,7 @@ pub struct PolicyDecision {
     /// Human-readable explanation.
     pub rationale: String,
     /// When the decision was made.
-    pub decided_at: DateTime<Utc>,
+    pub decided_at: UtcTimestamp,
 }
 
 impl PolicyDecision {
@@ -241,7 +240,7 @@ impl PolicyEvaluator {
             },
             matched_rule: None,
             rationale: format!("Global kill switch is active: {reason}"),
-            decided_at: Utc::now(),
+            decided_at: UtcTimestamp::now(),
         })
     }
 
@@ -258,7 +257,7 @@ impl PolicyEvaluator {
                         "Resource guard '{}' protects: {}",
                         guard.name, blocked_reason
                     ),
-                    decided_at: Utc::now(),
+                    decided_at: UtcTimestamp::now(),
                 });
             }
         }
@@ -286,7 +285,7 @@ impl PolicyEvaluator {
             },
             matched_rule: None,
             rationale: "Deny-by-default: no rule matched this request".to_string(),
-            decided_at: Utc::now(),
+            decided_at: UtcTimestamp::now(),
         }
     }
 }
@@ -333,7 +332,7 @@ fn decision_for(rule: &PolicyRule, req: &PolicyRequest) -> PolicyDecision {
         effect,
         matched_rule: Some(rule.id.clone()),
         rationale,
-        decided_at: Utc::now(),
+        decided_at: UtcTimestamp::now(),
     }
 }
 
@@ -341,7 +340,6 @@ fn decision_for(rule: &PolicyRule, req: &PolicyRequest) -> PolicyDecision {
 mod tests {
     use super::*;
     use crate::rules::RuleCondition;
-    use chrono::TimeZone;
     use sentinel_sysadmin_core::{CapabilityKind, RiskTier};
     use uuid::Uuid;
 
@@ -353,7 +351,7 @@ mod tests {
             risk_tier: risk,
             args: serde_json::json!({}),
             target_host: "localhost".to_string(),
-            timestamp: chrono::Utc.with_ymd_and_hms(2024, 1, 15, 10, 0, 0).unwrap(),
+            timestamp: "2024-01-15T10:00:00Z".parse().unwrap(),
             session_phase: None,
         }
     }

@@ -4,6 +4,7 @@ use sentinel_audit::{
     log::AuditLog,
     verifier::AuditVerifier,
 };
+use sentinel_sysadmin_core::UtcTimestamp;
 use uuid::Uuid;
 
 fn build_log_sync(n: usize) -> AuditLog {
@@ -138,7 +139,7 @@ fn bench_hash_computation(c: &mut Criterion) {
     };
     let prev_hash = "0".repeat(64);
     let event_id = Uuid::new_v4();
-    let timestamp = chrono::Utc::now();
+    let timestamp = UtcTimestamp::now();
     let session_id = Uuid::new_v4();
 
     c.bench_function("AuditEvent::compute_hash", |b| {

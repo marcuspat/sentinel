@@ -25,6 +25,7 @@ use sentinel_audit::{AuditEventType, AuditLog};
 use sentinel_policy::{PolicyEffect, PolicyEvaluator, PolicyRequest};
 use sentinel_sysadmin_core::{
     Capability, CapabilityManifest, CapabilityResult, ExecutionContext, Plan, StepStatus,
+    UtcTimestamp,
 };
 use serde::Serialize;
 use tracing::{info, warn, Instrument};
@@ -228,7 +229,7 @@ pub async fn run_plan(
             risk_tier: manifest.risk_tier,
             args: step.args.clone(),
             target_host: host.to_string(),
-            timestamp: chrono::Utc::now(),
+            timestamp: UtcTimestamp::now(),
             session_phase: Some("Executing".into()),
         });
         let label = effect_label(&decision.effect);
@@ -411,7 +412,7 @@ async fn roll_back(
             risk_tier: manifest.risk_tier,
             args: args.clone(),
             target_host: host.to_string(),
-            timestamp: chrono::Utc::now(),
+            timestamp: UtcTimestamp::now(),
             session_phase: Some("RollingBack".into()),
         });
         if let PolicyEffect::Denied { reason } = &decision.effect {

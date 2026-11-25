@@ -1,4 +1,4 @@
-use chrono::{DateTime, Utc};
+use sentinel_sysadmin_core::UtcTimestamp;
 use serde::{Deserialize, Serialize};
 use sha2::{Digest, Sha256};
 use uuid::Uuid;
@@ -104,7 +104,7 @@ pub struct AuditEvent {
     pub event_id: Uuid,
     pub session_id: Uuid,
     pub sequence: u64,
-    pub timestamp: DateTime<Utc>,
+    pub timestamp: UtcTimestamp,
     pub event_type: AuditEventType,
     /// Hex-encoded SHA-256 of the *previous* event (or 64 zeros for genesis).
     pub prev_hash: String,
@@ -118,7 +118,7 @@ struct AuditEventForHash<'a> {
     event_id: Uuid,
     session_id: Uuid,
     sequence: u64,
-    timestamp: &'a DateTime<Utc>,
+    timestamp: &'a UtcTimestamp,
     event_type: &'a AuditEventType,
     prev_hash: &'a str,
 }
@@ -133,7 +133,7 @@ impl AuditEvent {
         event_type: &AuditEventType,
         event_id: Uuid,
         sequence: u64,
-        timestamp: &DateTime<Utc>,
+        timestamp: &UtcTimestamp,
         session_id: Uuid,
     ) -> String {
         let partial = AuditEventForHash {
@@ -178,7 +178,7 @@ mod tests {
     fn make_event(seq: u64, prev_hash: &str) -> AuditEvent {
         let session_id = Uuid::new_v4();
         let event_id = Uuid::new_v4();
-        let timestamp = Utc::now();
+        let timestamp = UtcTimestamp::now();
         let event_type = AuditEventType::InvestigationStarted;
 
         let this_hash = AuditEvent::compute_hash(
@@ -239,9 +239,7 @@ mod tests {
     fn hash_is_deterministic() {
         let session_id = Uuid::nil();
         let event_id = Uuid::nil();
-        let ts = DateTime::parse_from_rfc3339("2024-01-01T00:00:00Z")
-            .unwrap()
-            .with_timezone(&Utc);
+        let ts = "2024-01-01T00:00:00Z".parse().unwrap();
         let event_type = AuditEventType::InvestigationStarted;
         let prev = "0".repeat(64);
 

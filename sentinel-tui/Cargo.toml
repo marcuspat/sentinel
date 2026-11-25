@@ -26,7 +26,6 @@ tracing-subscriber = { workspace = true }
 async-trait = { workspace = true }
 tokio = { workspace = true }
 uuid = { workspace = true }
-chrono = { workspace = true }
 ratatui = { workspace = true }
 crossterm = { workspace = true }
 clap = { workspace = true }

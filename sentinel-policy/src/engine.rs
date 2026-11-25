@@ -165,7 +165,6 @@ pub(crate) fn default_rules() -> Vec<PolicyRule> {
 mod tests {
     use super::*;
     use crate::evaluator::{PolicyEffect, PolicyRequest};
-    use chrono::TimeZone;
     use sentinel_sysadmin_core::{CapabilityKind, RiskTier};
     use uuid::Uuid;
 
@@ -177,7 +176,7 @@ mod tests {
             risk_tier: risk,
             args: serde_json::json!({}),
             target_host: "localhost".to_string(),
-            timestamp: chrono::Utc.with_ymd_and_hms(2024, 1, 15, 10, 0, 0).unwrap(),
+            timestamp: "2024-01-15T10:00:00Z".parse().unwrap(),
             session_phase: None,
         }
     }

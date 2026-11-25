@@ -3,6 +3,7 @@ name = "sentinel-sysadmin-core"
 description = "Capability model, policy engine core, and shared types for the Sentinel agentic sysadmin family"
 version.workspace = true
 edition.workspace = true
+rust-version.workspace = true
 license.workspace = true
 
 [dependencies]
@@ -11,7 +12,7 @@ serde_json = { workspace = true }
 thiserror = { workspace = true }
 async-trait = { workspace = true }
 uuid = { workspace = true }
-chrono = { workspace = true }
+calendrical_calculations = { workspace = true }
 sha2 = { workspace = true }
 hex = { workspace = true }
 

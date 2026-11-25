@@ -1,3 +1,4 @@
+use crate::UtcTimestamp;
 use serde::{Deserialize, Serialize};
 
 use crate::capability::CapabilityResult;
@@ -36,7 +37,7 @@ pub struct Observation {
     /// Result returned by the capability.
     pub result: CapabilityResult,
     /// Wall-clock time when the observation was recorded.
-    pub timestamp: chrono::DateTime<chrono::Utc>,
+    pub timestamp: UtcTimestamp,
 }
 
 impl Observation {
@@ -51,7 +52,7 @@ impl Observation {
             capability_id: capability_id.into(),
             args,
             result,
-            timestamp: chrono::Utc::now(),
+            timestamp: UtcTimestamp::now(),
         }
     }
 }
@@ -66,7 +67,7 @@ pub struct SessionCheckpoint {
     /// Full serialised session state as JSON.
     pub snapshot: serde_json::Value,
     /// Wall-clock time when the checkpoint was taken.
-    pub timestamp: chrono::DateTime<chrono::Utc>,
+    pub timestamp: UtcTimestamp,
 }
 
 /// An agent session: the top-level unit of work for Sentinel.
@@ -88,9 +89,9 @@ pub struct Session {
     /// The execution plan, once it has been created.
     pub plan: Option<Plan>,
     /// Wall-clock time when the session was started.
-    pub started_at: chrono::DateTime<chrono::Utc>,
+    pub started_at: UtcTimestamp,
     /// Wall-clock time when the session reached Completed or Aborted.
-    pub completed_at: Option<chrono::DateTime<chrono::Utc>>,
+    pub completed_at: Option<UtcTimestamp>,
     /// The most recent checkpoint, if one has been taken.
     pub checkpoint: Option<SessionCheckpoint>,
 }
@@ -105,7 +106,7 @@ impl Session {
             phase: SessionPhase::Investigating,
             observations: Vec::new(),
             plan: None,
-            started_at: chrono::Utc::now(),
+            started_at: UtcTimestamp::now(),
             completed_at: None,
             checkpoint: None,
         }
@@ -167,7 +168,7 @@ impl Session {
                 phase,
                 SessionPhase::Completed | SessionPhase::Aborted { .. }
             ) {
-                self.completed_at = Some(chrono::Utc::now());
+                self.completed_at = Some(UtcTimestamp::now());
             }
             self.phase = phase;
             Ok(())
@@ -186,7 +187,7 @@ impl Session {
             checkpoint_id: uuid::Uuid::new_v4(),
             phase: self.phase.clone(),
             snapshot,
-            timestamp: chrono::Utc::now(),
+            timestamp: UtcTimestamp::now(),
         }
     }
 
@@ -400,7 +401,7 @@ mod tests {
     fn abort_from_completed_is_disallowed() {
         let mut s = make_session();
         s.phase = SessionPhase::Completed;
-        s.completed_at = Some(chrono::Utc::now());
+        s.completed_at = Some(UtcTimestamp::now());
         let result = s.transition(SessionPhase::Aborted {
             reason: "late abort".into(),
         });
@@ -442,7 +443,7 @@ mod tests {
             checkpoint_id: uuid::Uuid::new_v4(),
             phase: SessionPhase::Investigating,
             snapshot: serde_json::json!("this is not a session"),
-            timestamp: chrono::Utc::now(),
+            timestamp: UtcTimestamp::now(),
         };
         let result = Session::restore_from_checkpoint(cp);
         assert!(result.is_err());

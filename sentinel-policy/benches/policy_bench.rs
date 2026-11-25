@@ -1,7 +1,6 @@
-use chrono::Utc;
 use criterion::{black_box, criterion_group, criterion_main, BenchmarkId, Criterion};
 use sentinel_policy::{default_policy, PolicyRequest};
-use sentinel_sysadmin_core::{CapabilityKind, RiskTier};
+use sentinel_sysadmin_core::{CapabilityKind, RiskTier, UtcTimestamp};
 use serde_json::json;
 use uuid::Uuid;
 
@@ -13,7 +12,7 @@ fn make_request(cap_id: &str, kind: CapabilityKind, risk: RiskTier) -> PolicyReq
         risk_tier: risk,
         args: json!({}),
         target_host: "localhost".to_string(),
-        timestamp: Utc::now(),
+        timestamp: UtcTimestamp::now(),
         session_phase: None,
     }
 }
@@ -31,7 +30,7 @@ fn bench_policy_evaluate_allow(c: &mut Criterion) {
                 risk_tier: RiskTier::Low,
                 args: json!({}),
                 target_host: "localhost".to_string(),
-                timestamp: Utc::now(),
+                timestamp: UtcTimestamp::now(),
                 session_phase: None,
             }))
         })
@@ -52,7 +51,7 @@ fn bench_policy_evaluate_deny(c: &mut Criterion) {
                 risk_tier: RiskTier::Critical,
                 args: json!({}),
                 target_host: "localhost".to_string(),
-                timestamp: Utc::now(),
+                timestamp: UtcTimestamp::now(),
                 session_phase: None,
             }))
         })
@@ -71,7 +70,7 @@ fn bench_policy_evaluate_approval_required(c: &mut Criterion) {
                 risk_tier: RiskTier::High,
                 args: json!({}),
                 target_host: "localhost".to_string(),
-                timestamp: Utc::now(),
+                timestamp: UtcTimestamp::now(),
                 session_phase: None,
             }))
         })
@@ -115,7 +114,7 @@ fn bench_policy_evaluate_all_tiers(c: &mut Criterion) {
                         risk_tier: black_box(risk),
                         args: json!({}),
                         target_host: "localhost".to_string(),
-                        timestamp: Utc::now(),
+                        timestamp: UtcTimestamp::now(),
                         session_phase: None,
                     })
                 })
@@ -147,7 +146,7 @@ fn bench_policy_batch_evaluate(c: &mut Criterion) {
                         risk_tier: risk,
                         args: json!({}),
                         target_host: "localhost".to_string(),
-                        timestamp: Utc::now(),
+                        timestamp: UtcTimestamp::now(),
                         session_phase: None,
                     }
                 })

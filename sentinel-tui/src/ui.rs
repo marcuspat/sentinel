@@ -8,7 +8,7 @@ use ratatui::{
     Frame,
 };
 
-use sentinel_sysadmin_core::RiskTier;
+use sentinel_sysadmin_core::{RiskTier, TimestampPrecision};
 
 use crate::app::{App, LogLevel, PlanStep, Session, StepStatus, Tab};
 
@@ -230,7 +230,7 @@ fn render_investigation_tab(frame: &mut Frame, area: Rect, app: &App) {
                     let level_style = log_level_style(e.level);
                     let line = Line::from(vec![
                         Span::styled(
-                            format!("[{}] ", e.timestamp.format("%H:%M:%S")),
+                            format!("[{}] ", e.timestamp.clock_time()),
                             Style::default().fg(Color::DarkGray),
                         ),
                         Span::styled(format!("{} ", e.level), level_style),
@@ -573,7 +573,7 @@ fn format_session_audit(session: &Session) -> String {
     out.push_str(&format!("Phase      : {:?}\n", session.phase));
     out.push_str(&format!(
         "Started    : {}\n",
-        session.started_at.format("%Y-%m-%dT%H:%M:%SZ")
+        session.started_at.rfc3339(TimestampPrecision::Seconds)
     ));
     if session.dry_run {
         out.push_str("Mode       : DRY-RUN\n");
@@ -582,7 +582,7 @@ fn format_session_audit(session: &Session) -> String {
     for entry in &session.log_entries {
         out.push_str(&format!(
             "[{}] {:5}  {}\n",
-            entry.timestamp.format("%H:%M:%S"),
+            entry.timestamp.clock_time(),
             entry.level,
             entry.message
         ));

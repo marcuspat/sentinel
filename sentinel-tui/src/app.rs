@@ -2,7 +2,7 @@ use serde::{Deserialize, Serialize};
 use tokio::sync::{mpsc, oneshot};
 use uuid::Uuid;
 
-use sentinel_sysadmin_core::{RiskTier, SessionPhase};
+use sentinel_sysadmin_core::{RiskTier, SessionPhase, UtcTimestamp};
 
 // ── Local plan / session types ────────────────────────────────────────────────
 // These mirror what the agent-llm crate will eventually expose.  They are
@@ -71,7 +71,7 @@ pub struct Plan {
     pub goal: String,
     pub steps: Vec<PlanStep>,
     pub overall_risk: RiskTier,
-    pub created_at: chrono::DateTime<chrono::Utc>,
+    pub created_at: UtcTimestamp,
 }
 
 impl Plan {
@@ -86,7 +86,7 @@ impl Plan {
             goal: goal.into(),
             steps,
             overall_risk,
-            created_at: chrono::Utc::now(),
+            created_at: UtcTimestamp::now(),
         }
     }
 }
@@ -156,7 +156,7 @@ impl std::fmt::Display for LogLevel {
 /// A single line in the session activity log.
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct LogEntry {
-    pub timestamp: chrono::DateTime<chrono::Utc>,
+    pub timestamp: UtcTimestamp,
     pub level: LogLevel,
     pub message: String,
 }
@@ -168,7 +168,7 @@ pub struct Session {
     pub goal: String,
     pub host: String,
     pub phase: SessionPhase,
-    pub started_at: chrono::DateTime<chrono::Utc>,
+    pub started_at: UtcTimestamp,
     pub log_entries: Vec<LogEntry>,
     pub current_plan: Option<Plan>,
     pub dry_run: bool,
@@ -181,7 +181,7 @@ impl Session {
             goal: goal.into(),
             host: host.into(),
             phase: SessionPhase::Investigating,
-            started_at: chrono::Utc::now(),
+            started_at: UtcTimestamp::now(),
             log_entries: Vec::new(),
             current_plan: None,
             dry_run,
@@ -190,7 +190,7 @@ impl Session {
 
     pub fn log(&mut self, level: LogLevel, message: impl Into<String>) {
         self.log_entries.push(LogEntry {
-            timestamp: chrono::Utc::now(),
+            timestamp: UtcTimestamp::now(),
             level,
             message: message.into(),
         });

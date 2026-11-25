@@ -22,7 +22,7 @@ use uuid::Uuid;
 
 use sentinel_audit::{AuditEventType, AuditLog};
 use sentinel_policy::{PolicyEffect, PolicyEvaluator, PolicyRequest};
-use sentinel_sysadmin_core::{ApprovalDecision, Capability, ExecutionContext, Plan};
+use sentinel_sysadmin_core::{ApprovalDecision, Capability, ExecutionContext, Plan, UtcTimestamp};
 
 use crate::backend::{LlmBackend, Message, ToolChoice};
 use crate::error::AgentError;
@@ -319,7 +319,7 @@ impl ReasoningLoop {
                         risk_tier: manifest.risk_tier,
                         args: req.args.clone(),
                         target_host: host.to_string(),
-                        timestamp: chrono::Utc::now(),
+                        timestamp: UtcTimestamp::now(),
                         session_phase: Some("Investigating".to_string()),
                     };
 

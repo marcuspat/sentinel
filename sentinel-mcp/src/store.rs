@@ -22,9 +22,9 @@
 //! replaces the document's inode, which would silently drop a lock held on
 //! it.
 
+use sentinel_sysadmin_core::UtcTimestamp;
 use std::path::{Path, PathBuf};
 
-use chrono::{DateTime, Utc};
 use serde::{Deserialize, Serialize};
 use sha2::{Digest, Sha256};
 use uuid::Uuid;
@@ -67,7 +67,7 @@ impl std::fmt::Display for PlanStatus {
 pub struct OperatorDecision {
     /// Free-form operator identity (e.g. `$USER`).  Not authenticated.
     pub by: String,
-    pub at: DateTime<Utc>,
+    pub at: UtcTimestamp,
     /// Content hash the operator saw and approved (`None` for rejections).
     pub approved_hash: Option<String>,
     /// Rejection reason (`None` for approvals).
@@ -79,8 +79,8 @@ pub struct OperatorDecision {
 /// Outcome of `sentinel execute`.
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct ExecutionRecord {
-    pub started_at: DateTime<Utc>,
-    pub finished_at: Option<DateTime<Utc>>,
+    pub started_at: UtcTimestamp,
+    pub finished_at: Option<UtcTimestamp>,
     pub steps_completed: u32,
     pub steps_failed: u32,
     pub steps_skipped: u32,
@@ -102,7 +102,7 @@ pub struct StoredPlan {
     pub proposed_via: String,
     /// MCP server session that proposed the plan (matches its audit log).
     pub proposer_session: Uuid,
-    pub proposed_at: DateTime<Utc>,
+    pub proposed_at: UtcTimestamp,
     /// Audit log file of the proposing MCP session.
     pub proposal_audit_file: Option<String>,
     pub decision: Option<OperatorDecision>,
@@ -163,7 +163,7 @@ impl StoredPlan {
             content_hash,
             proposed_via: "mcp".into(),
             proposer_session,
-            proposed_at: Utc::now(),
+            proposed_at: UtcTimestamp::now(),
             proposal_audit_file,
             decision: None,
             execution: None,
@@ -330,7 +330,7 @@ impl PlanStore {
             }
             rec.status = PlanStatus::Executing;
             rec.execution = Some(ExecutionRecord {
-                started_at: Utc::now(),
+                started_at: UtcTimestamp::now(),
                 finished_at: None,
                 steps_completed: 0,
                 steps_failed: 0,
@@ -399,7 +399,7 @@ impl PlanStore {
             rec.plan.approve();
             rec.decision = Some(OperatorDecision {
                 by: by.to_string(),
-                at: Utc::now(),
+                at: UtcTimestamp::now(),
                 approved_hash: Some(rec.content_hash.clone()),
                 reason: None,
                 audit_file,
@@ -422,7 +422,7 @@ impl PlanStore {
             rec.plan.reject(reason);
             rec.decision = Some(OperatorDecision {
                 by: by.to_string(),
-                at: Utc::now(),
+                at: UtcTimestamp::now(),
                 approved_hash: None,
                 reason: Some(reason.to_string()),
                 audit_file,

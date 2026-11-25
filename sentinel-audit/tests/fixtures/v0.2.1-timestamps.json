@@ -1,0 +1,138 @@
+{
+  "checkpoints": [
+    {
+      "message": "sentinel-audit-checkpoint-v1\n00000000-0000-0000-0000-00000000002a\n12\n2836be4f45336d3a001ac21791206bfb7fe189dc419fc2eb197674958fa149a1\n2024-01-01T00:00:00.000000000Z",
+      "wire": "{\"version\":1,\"session_id\":\"00000000-0000-0000-0000-00000000002a\",\"event_count\":12,\"head_hash\":\"2836be4f45336d3a001ac21791206bfb7fe189dc419fc2eb197674958fa149a1\",\"signed_at\":\"2024-01-01T00:00:00Z\",\"key_id\":\"4b735ac174e40636\",\"public_key\":\"c050c5637a44fa8629fff3cccce2300cb362a63d99d95fc54145266f4332445a\",\"signature\":\"8eb085b9192248f23688615a4b2653844174a1dd56c569ca881d5fd0a970f087eee743547fcbf20e77831603b9163244f91e22aabc291f26cbc5124e689fc001\"}"
+    },
+    {
+      "message": "sentinel-audit-checkpoint-v1\n00000000-0000-0000-0000-00000000002a\n12\n2836be4f45336d3a001ac21791206bfb7fe189dc419fc2eb197674958fa149a1\n2016-12-31T23:59:60.100000000Z",
+      "wire": "{\"version\":1,\"session_id\":\"00000000-0000-0000-0000-00000000002a\",\"event_count\":12,\"head_hash\":\"2836be4f45336d3a001ac21791206bfb7fe189dc419fc2eb197674958fa149a1\",\"signed_at\":\"2016-12-31T23:59:60.100Z\",\"key_id\":\"4b735ac174e40636\",\"public_key\":\"c050c5637a44fa8629fff3cccce2300cb362a63d99d95fc54145266f4332445a\",\"signature\":\"fb1f2452b5bc24da1066325d816739674fef2cb6e785007a3a4f4d6c4b536923a6947310e8ded81a0c176cab8cdb8bab5c980569a7ef33d2880b6c4ad05f480e\"}"
+    },
+    {
+      "message": "sentinel-audit-checkpoint-v1\n00000000-0000-0000-0000-00000000002a\n12\n2836be4f45336d3a001ac21791206bfb7fe189dc419fc2eb197674958fa149a1\n+10000-01-01T00:00:00.000000000Z",
+      "wire": "{\"version\":1,\"session_id\":\"00000000-0000-0000-0000-00000000002a\",\"event_count\":12,\"head_hash\":\"2836be4f45336d3a001ac21791206bfb7fe189dc419fc2eb197674958fa149a1\",\"signed_at\":\"+10000-01-01T00:00:00Z\",\"key_id\":\"4b735ac174e40636\",\"public_key\":\"c050c5637a44fa8629fff3cccce2300cb362a63d99d95fc54145266f4332445a\",\"signature\":\"e37dba2c43992bc17b3eaffaae334edd5fd32842fb7c13c872662b0d64f20f1dd0e5314171affef07da4ad797b3bcfb7684d68c8fb05e1897c724120e2c9d80c\"}"
+    }
+  ],
+  "log_lines": [
+    "{\"event_id\":\"00000000-0000-0000-0000-000000000001\",\"session_id\":\"00000000-0000-0000-0000-00000000002a\",\"sequence\":0,\"timestamp\":\"2024-01-01T00:00:00Z\",\"event_type\":{\"type\":\"InvestigationStarted\"},\"prev_hash\":\"0000000000000000000000000000000000000000000000000000000000000000\",\"this_hash\":\"59aac31521cef6b8b21f0a3c24fac9518e8fc22621be8ad13dc36d6d88f22211\"}",
+    "{\"event_id\":\"00000000-0000-0000-0000-000000000002\",\"session_id\":\"00000000-0000-0000-0000-00000000002a\",\"sequence\":1,\"timestamp\":\"2024-01-01T00:00:00.120Z\",\"event_type\":{\"type\":\"InvestigationStarted\"},\"prev_hash\":\"59aac31521cef6b8b21f0a3c24fac9518e8fc22621be8ad13dc36d6d88f22211\",\"this_hash\":\"80a8f971403bc4f8a374a629696d159efe23e31673802a8d0c32fa7795d81591\"}",
+    "{\"event_id\":\"00000000-0000-0000-0000-000000000003\",\"session_id\":\"00000000-0000-0000-0000-00000000002a\",\"sequence\":2,\"timestamp\":\"2024-01-01T00:00:00.123450Z\",\"event_type\":{\"type\":\"InvestigationStarted\"},\"prev_hash\":\"80a8f971403bc4f8a374a629696d159efe23e31673802a8d0c32fa7795d81591\",\"this_hash\":\"929f68fc9e855189578b4d274794f07cfae83783f8f2a00a0844fde323666dbc\"}",
+    "{\"event_id\":\"00000000-0000-0000-0000-000000000004\",\"session_id\":\"00000000-0000-0000-0000-00000000002a\",\"sequence\":3,\"timestamp\":\"2024-01-01T00:00:00.123456780Z\",\"event_type\":{\"type\":\"InvestigationStarted\"},\"prev_hash\":\"929f68fc9e855189578b4d274794f07cfae83783f8f2a00a0844fde323666dbc\",\"this_hash\":\"084e06479a8278f715fef4e40e5144b0e8ea794dbfd071d7069080cd9f3ddbfb\"}",
+    "{\"event_id\":\"00000000-0000-0000-0000-000000000005\",\"session_id\":\"00000000-0000-0000-0000-00000000002a\",\"sequence\":4,\"timestamp\":\"2023-12-31T23:53:00.123450Z\",\"event_type\":{\"type\":\"InvestigationStarted\"},\"prev_hash\":\"084e06479a8278f715fef4e40e5144b0e8ea794dbfd071d7069080cd9f3ddbfb\",\"this_hash\":\"76e888912cfc78929adf5ebeff0a9b254f69d27abb8e6e331932d5ccf0b60438\"}",
+    "{\"event_id\":\"00000000-0000-0000-0000-000000000006\",\"session_id\":\"00000000-0000-0000-0000-00000000002a\",\"sequence\":5,\"timestamp\":\"2016-12-31T23:59:60.100Z\",\"event_type\":{\"type\":\"InvestigationStarted\"},\"prev_hash\":\"76e888912cfc78929adf5ebeff0a9b254f69d27abb8e6e331932d5ccf0b60438\",\"this_hash\":\"bbb3519fd3239719195ef3b2f30a791f2e1749317e03319210dddb9f5bc04f17\"}",
+    "{\"event_id\":\"00000000-0000-0000-0000-000000000007\",\"session_id\":\"00000000-0000-0000-0000-00000000002a\",\"sequence\":6,\"timestamp\":\"-0001-12-31T23:59:59Z\",\"event_type\":{\"type\":\"InvestigationStarted\"},\"prev_hash\":\"bbb3519fd3239719195ef3b2f30a791f2e1749317e03319210dddb9f5bc04f17\",\"this_hash\":\"16a123eb0d1c5d46bc25326c329c6ffbeb2de07744baca0e384fb4e404ee011e\"}",
+    "{\"event_id\":\"00000000-0000-0000-0000-000000000008\",\"session_id\":\"00000000-0000-0000-0000-00000000002a\",\"sequence\":7,\"timestamp\":\"+10000-01-01T00:00:00Z\",\"event_type\":{\"type\":\"InvestigationStarted\"},\"prev_hash\":\"16a123eb0d1c5d46bc25326c329c6ffbeb2de07744baca0e384fb4e404ee011e\",\"this_hash\":\"6032b92d8bc1c1912cd30dbd77477e8be92e2d4fd109f78f9accee4feb53b0b3\"}",
+    "{\"event_id\":\"00000000-0000-0000-0000-000000000009\",\"session_id\":\"00000000-0000-0000-0000-00000000002a\",\"sequence\":8,\"timestamp\":\"-262143-01-01T00:00:00Z\",\"event_type\":{\"type\":\"InvestigationStarted\"},\"prev_hash\":\"6032b92d8bc1c1912cd30dbd77477e8be92e2d4fd109f78f9accee4feb53b0b3\",\"this_hash\":\"07d6b1a4a3d47e0f64231160097dc2825e84d6b209f4c4176c47b588119983b5\"}",
+    "{\"event_id\":\"00000000-0000-0000-0000-00000000000a\",\"session_id\":\"00000000-0000-0000-0000-00000000002a\",\"sequence\":9,\"timestamp\":\"+262142-12-31T23:59:59.999999999Z\",\"event_type\":{\"type\":\"InvestigationStarted\"},\"prev_hash\":\"07d6b1a4a3d47e0f64231160097dc2825e84d6b209f4c4176c47b588119983b5\",\"this_hash\":\"784018c449d36b5d6bd467c3a9d137cc12b88d5d50567b463e9b22c9a5e20e43\"}",
+    "{\"event_id\":\"00000000-0000-0000-0000-00000000000b\",\"session_id\":\"00000000-0000-0000-0000-00000000002a\",\"sequence\":10,\"timestamp\":\"2024-01-01T00:02:03.123456789Z\",\"event_type\":{\"type\":\"InvestigationStarted\"},\"prev_hash\":\"784018c449d36b5d6bd467c3a9d137cc12b88d5d50567b463e9b22c9a5e20e43\",\"this_hash\":\"9a7d826b0d53d5721ef2b385fd5aab16643a9434f20b1abf3219dc712cf75e29\"}",
+    "{\"event_id\":\"00000000-0000-0000-0000-00000000000c\",\"session_id\":\"00000000-0000-0000-0000-00000000002a\",\"sequence\":11,\"timestamp\":\"2024-01-01T00:00:00Z\",\"event_type\":{\"type\":\"InvestigationStarted\"},\"prev_hash\":\"9a7d826b0d53d5721ef2b385fd5aab16643a9434f20b1abf3219dc712cf75e29\",\"this_hash\":\"2836be4f45336d3a001ac21791206bfb7fe189dc419fc2eb197674958fa149a1\"}"
+  ],
+  "timestamp_cases": [
+    {
+      "input": "2024-01-01T00:00:00Z",
+      "millis": "2024-01-01T00:00:00.000Z",
+      "nanos": "2024-01-01T00:00:00.000000000Z",
+      "wire": "2024-01-01T00:00:00Z"
+    },
+    {
+      "input": "2024-01-01T00:00:00.120Z",
+      "millis": "2024-01-01T00:00:00.120Z",
+      "nanos": "2024-01-01T00:00:00.120000000Z",
+      "wire": "2024-01-01T00:00:00.120Z"
+    },
+    {
+      "input": "2024-01-01T00:00:00.123450Z",
+      "millis": "2024-01-01T00:00:00.123Z",
+      "nanos": "2024-01-01T00:00:00.123450000Z",
+      "wire": "2024-01-01T00:00:00.123450Z"
+    },
+    {
+      "input": "2024-01-01T00:00:00.123456780Z",
+      "millis": "2024-01-01T00:00:00.123Z",
+      "nanos": "2024-01-01T00:00:00.123456780Z",
+      "wire": "2024-01-01T00:00:00.123456780Z"
+    },
+    {
+      "input": "2024-01-01T01:23:00.123450+01:30",
+      "millis": "2023-12-31T23:53:00.123Z",
+      "nanos": "2023-12-31T23:53:00.123450000Z",
+      "wire": "2023-12-31T23:53:00.123450Z"
+    },
+    {
+      "input": "2017-01-01T00:59:60.100+01:00",
+      "millis": "2016-12-31T23:59:60.100Z",
+      "nanos": "2016-12-31T23:59:60.100000000Z",
+      "wire": "2016-12-31T23:59:60.100Z"
+    },
+    {
+      "input": "-0001-12-31T23:59:59Z",
+      "millis": "-0001-12-31T23:59:59.000Z",
+      "nanos": "-0001-12-31T23:59:59.000000000Z",
+      "wire": "-0001-12-31T23:59:59Z"
+    },
+    {
+      "input": "+10000-01-01T00:00:00Z",
+      "millis": "+10000-01-01T00:00:00.000Z",
+      "nanos": "+10000-01-01T00:00:00.000000000Z",
+      "wire": "+10000-01-01T00:00:00Z"
+    },
+    {
+      "input": "-262143-01-01T00:00:00Z",
+      "millis": "-262143-01-01T00:00:00.000Z",
+      "nanos": "-262143-01-01T00:00:00.000000000Z",
+      "wire": "-262143-01-01T00:00:00Z"
+    },
+    {
+      "input": "+262142-12-31T23:59:59.999999999Z",
+      "millis": "+262142-12-31T23:59:59.999Z",
+      "nanos": "+262142-12-31T23:59:59.999999999Z",
+      "wire": "+262142-12-31T23:59:59.999999999Z"
+    },
+    {
+      "input": "2024- 1- 1 0: 2:3.12345678999 UTC",
+      "millis": "2024-01-01T00:02:03.123Z",
+      "nanos": "2024-01-01T00:02:03.123456789Z",
+      "wire": "2024-01-01T00:02:03.123456789Z"
+    },
+    {
+      "input": "2024-01-01t01:30:00+0130",
+      "millis": "2024-01-01T00:00:00.000Z",
+      "nanos": "2024-01-01T00:00:00.000000000Z",
+      "wire": "2024-01-01T00:00:00Z"
+    }
+  ],
+  "weekdays": [
+    {
+      "input": "Mon",
+      "wire": "Mon"
+    },
+    {
+      "input": "Monday",
+      "wire": "Mon"
+    },
+    {
+      "input": "tUESDAY",
+      "wire": "Tue"
+    },
+    {
+      "input": "Wed",
+      "wire": "Wed"
+    },
+    {
+      "input": "THURSDAY",
+      "wire": "Thu"
+    },
+    {
+      "input": "Fri",
+      "wire": "Fri"
+    },
+    {
+      "input": "Sat",
+      "wire": "Sat"
+    },
+    {
+      "input": "Sun",
+      "wire": "Sun"
+    }
+  ]
+}

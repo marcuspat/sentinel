@@ -15,6 +15,7 @@
 //! marked `Skipped`.  Automatic rollback is not performed in this version
 //! (see ADR-013, "Known gaps").
 
+use sentinel_sysadmin_core::UtcTimestamp;
 use serde::Serialize;
 use uuid::Uuid;
 
@@ -185,7 +186,7 @@ pub async fn execute_approved_plan_with(
     }
     .await;
 
-    let finished_at = chrono::Utc::now();
+    let finished_at = UtcTimestamp::now();
     match run {
         Ok((outcomes, halted)) => {
             let count = |s: &str| outcomes.iter().filter(|o| o.status == s).count() as u32;
